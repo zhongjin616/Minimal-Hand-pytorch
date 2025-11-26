@@ -27,7 +27,7 @@ Modules included:
 __all__ = ['load_model', 'save_model']
 
 import numpy as np
-import cPickle as pickle
+import pickle
 import chumpy as ch
 from chumpy.ch import MatVecMult
 from posemapper import posemap
@@ -87,7 +87,7 @@ def backwards_compatibility_replacements(dd):
 def ready_arguments(fname_or_dict):
 
     if not isinstance(fname_or_dict, dict):
-        dd = pickle.load(open(fname_or_dict))
+        dd = pickle.load(open(fname_or_dict, 'rb'), encoding='iso-8859-1')
     else:
         dd = fname_or_dict
         
