@@ -3,4 +3,6 @@ __pycache__
 *.zip
 *.tar.gz
 *.tar.xz
+*.DS_Store
 data
+mano/models
