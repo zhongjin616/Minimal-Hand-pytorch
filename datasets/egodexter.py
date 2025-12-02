@@ -14,7 +14,6 @@ import numpy as np
 import pandas as pd
 import torch
 from PIL import Image
-from PIL import Image
 from termcolor import colored
 from torchvision import transforms
 from tqdm import tqdm
@@ -63,9 +62,14 @@ class EgoDexter(torch.utils.data.Dataset):
 
         self.M_color = np.matmul(self.color_intrisics, self.color_extrisics)
 
+        # 兼容不同 Pillow 版本的重采样常量
+        try:
+            resample_mode = Image.Resampling.LANCZOS
+        except AttributeError:
+            resample_mode = Image.LANCZOS
         self.transform_image = transforms.Compose([
             transforms.CenterCrop((480, 480)),
-            transforms.Resize((128, 128), Image.ANTIALIAS),
+            transforms.Resize((128, 128), resample_mode),
             transforms.ToTensor(),
             transforms.Normalize([0.5, 0.5, 0.5], [1, 1, 1])
         ])
