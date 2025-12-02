@@ -476,14 +476,7 @@ class STBDataset(torch.utils.data.Dataset):
         return sample
 
     def norm_dep_img(self, dep_, joint_z):
-        if isinstance(dep_, PIL.Image.Image):
-            dep_ = np.array(dep_)
-            assert (dep_.shape[-1] == 3)  # used as "RGB"
-
-        ''' Converts a RGB-coded depth into float valued depth. '''
-        ''' dep values now are stored as |mod|div|0| (RGB) '''
-        dep = (dep_[:, :, 1] * 2 ** 8 + dep_[:, :, 0]).astype('float32')
-        dep /= 1000.0  # depth now in meter
+        dep = self.real_dep_img(dep_)
 
         lower_bound = joint_z.min() - 0.05  # meter
         upper_bound = joint_z.max() + 0.05
@@ -504,6 +497,7 @@ class STBDataset(torch.utils.data.Dataset):
 
         ''' Converts a RGB-coded depth into float valued depth. '''
         ''' dep values now are stored as |mod|div|0| (RGB) '''
+        dep_ = dep_.astype(np.uint16)
         dep = (dep_[:, :, 1] * 2 ** 8 + dep_[:, :, 0]).astype('float32')
         dep /= 1000.0  # depth now in meter
 
