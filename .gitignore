@@ -6,3 +6,5 @@ __pycache__
 *.DS_Store
 data
 mano/models
+checkpoints
+out_loss_auc

@@ -230,8 +230,11 @@ python demo_dl.py
 ## DetNet Training and Evaluation
 
 Run the training code
-```
+```bash
 python train_detnet.py --data_root data/
+
+# resume from a checkpoint
+python train_detnet.py --data_root data/ --resume --evaluate_id 73 --start_epoch 73
 ```
 
 
