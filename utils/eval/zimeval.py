@@ -56,6 +56,8 @@ class EvalUtil:
         euclidean_dist = np.sqrt(np.sum(np.square(diff), axis=1))
 
         num_kp = keypoint_gt.shape[0]
+        print(f"==> in feed(), num_kp is {num_kp}")
+        # TODO/DEBUG: num_kp may be finger tips only, e.g., 5, but it looks like self.num_kp is 21
         for i in range(num_kp):
             if keypoint_vis[i]:
                 self.data[i].append(euclidean_dist[i])

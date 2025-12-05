@@ -1,4 +1,5 @@
 import numpy as np
+
 def global_align(gtj0, prj0, key):
     gtj = gtj0.copy()
     prj = prj0.copy()
@@ -50,4 +51,12 @@ def global_align(gtj0, prj0, key):
             gtj_valid.append(gtj_mask)
             prj_valid_align.append(prj_valid_align_i)
 
-        return np.array(gtj_valid), np.array(prj_valid_align)
+        # return np.array(gtj_valid), np.array(prj_valid_align)
+        '''
+        fix:
+            ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (128,) + inhomogeneous part.
+            因为 gtj_valid 数组里不全是5*3的shape， 也可能是4*3, 3*3等， 所以要么:
+            1. 只处理5个指尖都有标注的情况, 否则出现上述Error
+            2. 直接返回 list 而不做np.array转换
+        '''
+        return gtj_valid, prj_valid_align
