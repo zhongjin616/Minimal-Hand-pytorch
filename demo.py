@@ -8,20 +8,28 @@ import matplotlib.pyplot as plt
 from utils import vis
 from op_pso import PSO
 import open3d
+from datasets.video_stream import video_stream
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 _mano_root = 'mano/models'
 
 module = detnet().to(device)
 print('load model start')
-check_point = torch.load('new_check_point/ckp_detnet_83.pth', map_location=device)
+# check_point = torch.load('../pretrained_checkpoints/Minimal-Hand-pytorch/my_results/checkpoints/ckp_detnet_106.pth', map_location=device)
+# check_point = torch.load('../pretrained_checkpoints/Minimal-Hand-pytorch/bmc_ckp.pth', map_location=device)
+
+## trained by myself
+check_point = torch.load('checkpoints/ckp_detnet_497.pth', map_location=device)
+
 model_state = module.state_dict()
 state = {}
 for k, v in check_point.items():
-    if k in model_state:
-        state[k] = v
+    # 去掉 "module." 前缀（如果存在）
+    new_k = k.replace('module.', '') if k.startswith('module.') else k
+    if new_k in model_state:
+        state[new_k] = v
     else:
-        print(k, ' is NOT in current model')
+        print(new_k, ' is NOT in current model')
 model_state.update(state)
 module.load_state_dict(model_state)
 print('load model finished')
@@ -40,6 +48,7 @@ point_fliter = smoother.OneEuroFilter(4.0, 0.0)
 mesh_fliter = smoother.OneEuroFilter(4.0, 0.0)
 shape_fliter = smoother.OneEuroFilter(4.0, 0.0)
 cap = cv2.VideoCapture(0)
+# cap = video_stream("./test_video/my_hand.mp4")
 print('opencv finished')
 flag = 1
 plt.ion()
@@ -86,7 +95,7 @@ while (cap.isOpened()):
 
     pre_joints = result['xyz'].squeeze(0)
     now_uv = result['uv'].clone().detach().cpu().numpy()[0, 0]
-    now_uv = now_uv.astype(np.float)
+    now_uv = now_uv.astype(np.float64)
     trans = np.zeros((1, 3))
     trans[0, 0:2] = now_uv - 16.0
     trans = trans / 16.0
